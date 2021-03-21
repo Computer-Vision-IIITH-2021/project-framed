@@ -57,3 +57,27 @@ def get_harr_wav(in_channels, pool=True):
     HH.weight.data = filter_HH.float().unsqueeze(0).expand(in_channels, -1, -1, -1)
 
     return LL, LH, HL, HH
+
+class WavePool(nn.Module):
+    def __init__(self, in_channels):
+        super(WavePool, self).__init__()
+        self.LL, self.LH, self.HL, self.HH = get_wav(in_channels)
+
+    def forward(self, x):
+        return self.LL(x), self.LH(x), self.HL(x), self.HH(x)
+
+
+class WaveUnpool(nn.Module):
+    def __init__(self, in_channels, option_unpool='cat5'):
+        super(WaveUnpool, self).__init__()
+        self.in_channels = in_channels
+        self.option_unpool = option_unpool
+        self.LL, self.LH, self.HL, self.HH = get_wav(self.in_channels, pool=False)
+
+    def forward(self, LL, LH, HL, HH, original=None):
+        if self.option_unpool == 'sum':
+            return self.LL(LL) + self.LH(LH) + self.HL(HL) + self.HH(HH)
+        elif self.option_unpool == 'cat5' and original is not None:
+            return torch.cat([self.LL(LL), self.LH(LH), self.HL(HL), self.HH(HH), original], dim=1)
+        else:
+            raise NotImplementedError
