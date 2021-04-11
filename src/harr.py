@@ -61,7 +61,7 @@ def get_harr_wav(in_channels, pool=True):
 class WavePool(nn.Module):
     def __init__(self, in_channels):
         super(WavePool, self).__init__()
-        self.LL, self.LH, self.HL, self.HH = get_wav(in_channels)
+        self.LL, self.LH, self.HL, self.HH = get_harr_wav(in_channels)
 
     def forward(self, x):
         return self.LL(x), self.LH(x), self.HL(x), self.HH(x)
@@ -72,7 +72,7 @@ class WaveUnpool(nn.Module):
         super(WaveUnpool, self).__init__()
         self.in_channels = in_channels
         self.option_unpool = option_unpool
-        self.LL, self.LH, self.HL, self.HH = get_wav(self.in_channels, pool=False)
+        self.LL, self.LH, self.HL, self.HH = get_harr_wav(self.in_channels, pool=False)
 
     def forward(self, LL, LH, HL, HH, original=None):
         if self.option_unpool == 'sum':
