@@ -5,7 +5,7 @@ import argparse
 import torch
 from torchvision.utils import save_image
 
-from model import WaveEncoder, WaveDecoder
+from encoder_decoder import WaveEncoder, WaveDecoder
 
 from helpers.core import feature_wct
 from helpers.io import Timer, open_image, load_segment, compute_label_info
